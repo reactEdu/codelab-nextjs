@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react'
-import Head from 'next/head'
-import Nav from '../components/nav'
+import React, { useState, useEffect, useRef } from 'react';
+import Head from 'next/head';
+import Nav from '../components/nav';
+import Lotto from '../components/lotto';
 
 const Home = () => {
   const [ list, setList ] = useState([]); 
@@ -44,13 +45,15 @@ const Home = () => {
 
 
   return (
-    <div>
+    <>
       <Head>
         <title>Home</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Nav />
       
+      <Lotto />
+
       <div className="container">
         <div className="form-inline">
           <div className="form-group">
@@ -115,7 +118,7 @@ const Home = () => {
           color: #333;
         }
       `}</style>
-    </div>
+    </>
 
   );
 }
