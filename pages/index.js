@@ -1,9 +1,20 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Head from 'next/head'
 import Nav from '../components/nav'
 
 const Home = () => {
-  const [ count, setCount ] = useState(0); 
+  const [ list, setList ] = useState([]); 
+  const [ task, setTask ] = useState(''); 
+
+  const data = {
+    id: new Date().getTime().toString(),
+    content: '[' + Math.floor(Math.random()*3+1) + '] ' + task
+  }
+
+  const handleChangeTask = (e) => {
+    setTask(e.target.value);
+  }
+
   const addItem = () => {
     let todoList = localStorage.getItem('todo-list');
     if (todoList) {
@@ -11,13 +22,27 @@ const Home = () => {
     } else {
       todoList = [];
     }
-    todoList.push({
-      id: new Date().getTime().toString(),
-      content: '할 일 목록 ' + Math.floor(Math.random()*3+1)
-    });
+    todoList.push(data);
 
     localStorage.setItem('todo-list', JSON.stringify( todoList ));
+
+    load();
+    setTask('');
   }
+
+  const load = () => {
+    let list = localStorage.getItem('todo-list');
+    if( list ) list = JSON.parse(list)
+    else list = [];
+    setList(list);
+  }
+
+  // localStorage처럼 클라이언트 사이드 자바스크립트는 useEffect안에서 실행
+  useEffect(() => {
+    load();
+  }, []); // componentDidMount
+
+
   return (
     <div>
       <Head>
@@ -25,7 +50,25 @@ const Home = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Nav />
-      <h1>Hello nextJS</h1>
+      
+      <div className="container">
+        <div className="form-inline">
+          <div className="form-group">
+            <input type="text" className="form-control" onChange={handleChangeTask} value={task}/>
+          </div>
+          <div className="form-group">
+            <button className="btn btn-white" onClick={() => addItem()}>추가</button>
+          </div>
+        </div>
+        <ul>
+          {
+            list.map(item => (
+              <li key={item.id}>{item.content}</li>
+            )
+          )}
+        </ul>
+      </div>
+
       <style jsx>{`
         .hero {
           width: 100%;
